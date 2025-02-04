@@ -1,0 +1,46 @@
+{
+    # Global options
+    admin off  # Disable admin API for security
+    default_sni ai.local
+}
+
+(tls_config) {
+    tls /etc/caddy/cert.pem /etc/caddy/key.pem
+}
+
+# Handle all specified domains
+ai.local, *.ai.local, ai.test, localhost, 127.0.0.1, [::1] {
+    import tls_config
+
+    # Enable logging
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+
+    # Handle errors
+    handle_errors {
+        respond "{err.status_code} {err.message}"
+    }
+
+    # Proxy to open-webui service
+    reverse_proxy http://open-webui:8080 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Health checks
+        health_uri /health
+        health_interval 30s
+        health_timeout 10s
+        health_status 200
+
+        # Timeouts
+        transport http {
+            keepalive 30s
+            keepalive_idle_conns 10
+        }
+    }
+}

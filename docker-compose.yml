@@ -1,0 +1,49 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    environment:
+      GOOGLE_DRIVE_API_KEY: ${GOOGLE_DRIVE_API_KEY}
+      GOOGLE_DRIVE_CLIENT_ID: ${GOOGLE_PSE_ENGINE_ID}
+      GOOGLE_PSE_API_KEY: ${GOOGLE_PSE_API_KEY}
+      GOOGLE_PSE_ENGINE_ID: ${GOOGLE_PSE_ENGINE_ID}
+      OLLAMA_API_BASE_URL: http://localhost:11434
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      WEBUI_URL: ${WEBUI_URL}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    ports:
+      - "8080:8080"
+    volumes:
+      - open-webui:/app/backend/data
+      - ./config/config.json:/app/config.json:ro
+      - ./config/webui.db:/app/backend/data/webui.db
+    networks:
+      - webnet
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - ./certs/cert.pem:/etc/caddy/cert.pem:ro
+      - ./certs/key.pem:/etc/caddy/key.pem:ro
+      - caddy_config:/config
+    depends_on:
+      - open-webui
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
+
+volumes:
+  open-webui:
+  caddy_data:
+  caddy_config:
