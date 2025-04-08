@@ -40,7 +40,7 @@ choco install mkcert
    make start
    ```
 
-The environment will be available at https://localhost or https://ai.test (if configured in your hosts file).
+The environment will be available at https://localhost (or https://$WEBUI_DOMAIN, if configured).
 
 ## Available Commands
 
@@ -67,8 +67,8 @@ The project uses a `.env` file for configuration. If it doesn't exist, it will b
 ### Default Domains
 
 The SSL certificates are configured for:
+- Your domain (set the WEBUI_DOMAIN environment variable)
 - localhost
-- ai.test
 - 127.0.0.1
 - ::1 (IPv6 localhost)
 
