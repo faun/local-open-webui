@@ -46,9 +46,9 @@ start: ensure-env
 	@if docker-compose ps | grep open-webui | grep -q "Up"; then \
 		echo "Open WebUI is already running."; \
 	else \
-		docker-compose up -d --wait; \
+		docker-compose up -d --wait --remove-orphans; \
 		echo "Open WebUI and Caddy are now running."; \
-		which open > /dev/null && open https://localhost || echo "Services started at https://localhost"; \
+		which open > /dev/null && open https://${WEBUI_URL:?} || echo "Services started at https://${WEBUI_URL}"; \
 	fi
 
 up: start logs
