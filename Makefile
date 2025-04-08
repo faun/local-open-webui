@@ -26,7 +26,7 @@ certs: check-mkcert create-cert-dir
 	mkcert -install \
 		-cert-file ./certs/cert.pem \
 		-key-file ./certs/key.pem \
-		"ai.test" \
+		"$(WEBUI_DOMAIN)" \
 		"localhost" \
 		"127.0.0.1" \
 		"::1"

@@ -25,6 +25,8 @@ services:
     image: caddy:latest
     container_name: caddy-proxy
     restart: unless-stopped
+    environment:
+      WEBUI_DOMAIN: ${WEBUI_DOMAIN:?}
     ports:
       - "80:80"
       - "443:443"

@@ -1,7 +1,7 @@
 {
     # Global options
     admin off  # Disable admin API for security
-    default_sni ai.local
+    default_sni {$WEBUI_DOMAIN}
 }
 
 (tls_config) {
@@ -9,7 +9,7 @@
 }
 
 # Handle all specified domains
-ai.local, *.ai.local, ai.test, localhost, 127.0.0.1, [::1] {
+{$WEBUI_DOMAIN}, localhost, 127.0.0.1, [::1] {
     import tls_config
 
     # Enable logging
